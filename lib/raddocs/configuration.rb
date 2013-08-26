@@ -19,6 +19,12 @@ module Raddocs
     add_setting :include_bootstrap, :default => true
     add_setting :external_css, :default => []
 
+    def views_dir=(val)
+      Raddocs::App.class_eval do
+        set :views, val
+      end
+    end
+
     def settings
       @settings ||= {}
     end

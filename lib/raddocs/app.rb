@@ -30,7 +30,13 @@ module Raddocs
 
       example = JSON.parse(file_content)
       example["parameters"] = Parameters.new(example["parameters"]).parse
-      haml :example, :locals => { :example => example }
+
+      if request.xhr?
+        haml :example, :locals => {:example => example}, :layout => false
+      else
+        index = JSON.parse(File.read("#{docs_dir}/index.json"))
+        haml :example, :locals => { :index => index, :example => example }
+      end
     end
 
     not_found do
@@ -54,7 +60,7 @@ module Raddocs
         files = ["#{url_location}/codemirror.css", "#{url_location}/application.css"]
 
         if Raddocs.configuration.include_bootstrap
-          files << "#{url_location}/bootstrap.min.css"
+          files << "#{url_location}/bootstrap.css"
         end
 
         Dir.glob(File.join(docs_dir, "styles", "*.css")).each do |css_file|
@@ -65,6 +71,17 @@ module Raddocs
         files.concat Array(Raddocs.configuration.external_css)
 
         files
+      end
+
+      def sort_rest_actions(array)
+        new_array = []
+        ["GET", "POST", "PUT", "DELETE"].reverse.each do |a|
+          while word = array.find { |x| x["description"] =~ /#{a}/i }
+            array.delete(word)
+            new_array.unshift(word)
+          end
+        end
+        new_array + array
       end
     end
 

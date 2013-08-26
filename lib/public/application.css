@@ -40,3 +40,21 @@ body {
   font-size: 1.2em;
   margin-bottom: 15px;
 }
+
+td.required .name:after {
+  float: right;
+  content: "required";
+  font-weight: normal;
+  color: #F08080;
+}
+p {
+  padding: 15px;
+  font-size: 130%;
+}
+h4, h3 {
+  text-transform: uppercase;
+}
+h4 {
+  font-size: 16px;
+  color: #999999;
+}
